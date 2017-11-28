@@ -2,8 +2,8 @@
  * Created by Administrator on 2017/11/27 0027.
  */
 var mongo=require('mongodb').MongoClient;
-var ObjectID = require('mongodb').ObjectID;    //²éÑ¯_id
-//ÅäÖÃÎÄ¼þ
+var ObjectID = require('mongodb').ObjectID;    //ï¿½ï¿½Ñ¯_id
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 var config=require('./config.js');
 
 function _connect(callback){
@@ -17,12 +17,40 @@ function _connect(callback){
     })
 }
 
-function find(collectionName,obj,cb){
+exports.find=function(collectionName,obj,cb){
     _connect(function(error,db){
-        var result=db.collectionName.find(obj)
-            result.toArray(err,function(){
+        var result=db.collection(collectionName).find(obj)
+            result.toArray(function(err,data){
                 cb(err,data);
             })
+    })
+}
+
+exports.insert=function(collectionName,obj,cb){
+    _connect(function(error,db){
+       db.collection(collectionName).insertOne(obj,function(err){
+          cb(err);
+           db.close();
+       })
+    })
+}
+
+exports.update=function(collectionName,obj1,obj2,cb){
+    _connect(function(error,db){
+        db.collection(collectionName).update(obj1,obj2,function(err){
+            cb(err);
+            db.close();
         })
     })
+}
+
+exports.remove=function(collectionName,obj,cb){
+    _connect(function(error,db){
+        db.collection(collectionName).remove(obj,function(err){
+           cb(err)
+            db.close();
+        })
+
+    })
+
 }
